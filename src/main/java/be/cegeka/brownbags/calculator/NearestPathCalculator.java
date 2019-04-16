@@ -3,34 +3,40 @@ package be.cegeka.brownbags.calculator;
 import be.cegeka.brownbags.Location;
 import be.cegeka.brownbags.World;
 import be.cegeka.brownbags.WorldObject;
-import be.cegeka.brownbags.worldobject.Wall;
+import com.google.common.collect.Sets;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static be.cegeka.brownbags.calculator.Path.path;
 
 public class NearestPathCalculator {
 
     public Path calculatePath(Location attackerLocation, World world) {
         WorldObject attacker = world.getAtLocation(attackerLocation);
-        return getPath(world, attacker, newArrayList(attackerLocation));
+        return getPath(world, attacker, attackerLocation);
     }
 
-    private Path getPath(World world, WorldObject attacker, List<Location> visitedLocations) {
-        List<Location> toCheckLocations = visitedLocations.get(visitedLocations.size() - 1).getSurroundingLocations().stream()
-                .filter(toCheckLocation -> !visitedLocations.contains(toCheckLocation))
-                .filter(toCheckLocation -> !(world.getAtLocation(toCheckLocation) instanceof Wall))
-                .collect(Collectors.toList());
+    private Path getPath(World world, WorldObject attacker, Location startingLocation) {
+        Deque<Path> paden = new ArrayDeque<>();
+        paden.add(path(startingLocation));
+        Set<Location> visitedLocations = Sets.newHashSet(startingLocation);
+        while (!paden.isEmpty()) {
+            Path path = paden.pop();
+            Location lastVisitedLocation = path.getLast();
+            visitedLocations.add(lastVisitedLocation);
 
-        for (Location location : toCheckLocations) {
-            if (world.getAtLocation(location).isEnemyOf(attacker)) {
-                return Path.path(location);
+            for (Location location : lastVisitedLocation.getSurroundingLocations()) {
+                if (world.getAtLocation(location).isEnemyOf(attacker)) {
+                    return path.createNewWith(location);
+                }
+                if (!visitedLocations.contains(location) && world.getAtLocation(location).canBeMovedThru()) {
+                    paden.addLast(path.createNewWith(location));
+                }
             }
-        }
-        for (Location location : toCheckLocations) {
-            visitedLocations.add(location);
-            return getPath(world, attacker, visitedLocations).push(location);
+
         }
         return null;
     }

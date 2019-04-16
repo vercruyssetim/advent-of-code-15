@@ -17,7 +17,7 @@ public class NearestPathCalculatorTest {
 
         Path actual = nearestPathCalculator.calculatePath(location(0, 0), world);
 
-        assertThat(actual.getLocations()).containsExactly(location(1, 0));
+        assertThat(actual.getLocations()).containsExactly(location(0, 0), location(1, 0));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class NearestPathCalculatorTest {
 
         Path actual = nearestPathCalculator.calculatePath(location(1, 0), world);
 
-        assertThat(actual.getLocations()).containsExactly(location(0, 0));
+        assertThat(actual.getLocations()).containsExactly(location(1, 0), location(0, 0));
     }
 
     @Test
@@ -37,7 +37,7 @@ public class NearestPathCalculatorTest {
 
         Path actual = nearestPathCalculator.calculatePath(location(0, 1), world);
 
-        assertThat(actual.getLocations()).containsExactly(location(0, 0));
+        assertThat(actual.getLocations()).containsExactly(location(0, 1), location(0, 0));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class NearestPathCalculatorTest {
 
         Path actual = nearestPathCalculator.calculatePath(location(0, 0), world);
 
-        assertThat(actual.getLocations()).containsExactly(location(1, 0), location(2, 0));
+        assertThat(actual.getLocations()).containsExactly(location(0, 0), location(1, 0), location(2, 0));
     }
 
     @Test
@@ -55,6 +55,29 @@ public class NearestPathCalculatorTest {
 
         Path actual = nearestPathCalculator.calculatePath(location(3, 0), world);
 
-        assertThat(actual.getLocations()).containsExactly(location(4, 0), location(5, 0));
+        assertThat(actual.getLocations()).containsExactly(location(3, 0), location(4, 0), location(5, 0));
     }
+
+    @Test
+    public void calculatePath_givenSomeMoreDifficultSetup() {
+        World world = new WorldInputParser().parseFromString("E..GGE");
+
+        Path actual = nearestPathCalculator.calculatePath(location(3, 0), world);
+
+        assertThat(actual.getLocations()).containsExactly(location(3, 0), location(2, 0), location(1, 0), location(0, 0));
+    }
+
+    @Test
+    public void calculatePath_givenSomeEvenMoreDifficultSetup() {
+        World world = new WorldInputParser().parseFromString(
+                "...E" + "\n" +
+                        "E##." + "\n" +
+                        "..G.");
+
+        Path actual = nearestPathCalculator.calculatePath(location(2, 2), world);
+
+        assertThat(actual.getLocations()).containsExactly(location(1, 0), location(0, 0), location(0, 1), location(0, 2), location(1, 2));
+    }
+
+
 }

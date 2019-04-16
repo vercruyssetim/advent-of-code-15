@@ -35,4 +35,9 @@ public class Pion implements WorldObject {
     public boolean isEnemyOf(WorldObject worldObject) {
         return worldObject instanceof Pion && ((Pion)worldObject).race != this.race;
     }
+
+    @Override
+    public boolean canBeMovedThru() {
+        return false;
+    }
 }

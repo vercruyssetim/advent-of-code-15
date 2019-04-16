@@ -4,10 +4,7 @@ import be.cegeka.brownbags.Location;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -18,6 +15,10 @@ public class Path {
         locations.add(location);
     }
 
+    private Path(Deque<Location> locations){
+        this.locations = locations;
+    }
+
     public static Path path(Location location) {
         return new Path(location);
     }
@@ -26,8 +27,13 @@ public class Path {
         return newArrayList(locations);
     }
 
-    public Path push(Location location) {
-        locations.addFirst(location);
-        return this;
+    public Location getLast(){
+        return locations.getLast();
+    }
+
+    public Path createNewWith(Location location) {
+        Deque<Location> result = Queues.newArrayDeque(this.locations);
+        result.addLast(location);
+        return new Path(result);
     }
 }

@@ -19,4 +19,9 @@ public class Wall implements WorldObject {
     public boolean isEnemyOf(WorldObject worldObject) {
         return false;
     }
+
+    @Override
+    public boolean canBeMovedThru() {
+        return false;
+    }
 }

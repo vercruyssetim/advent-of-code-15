@@ -19,4 +19,9 @@ public class OpenSpace implements WorldObject {
     public boolean isEnemyOf(WorldObject worldObject) {
         return false;
     }
+
+    @Override
+    public boolean canBeMovedThru() {
+        return true;
+    }
 }
